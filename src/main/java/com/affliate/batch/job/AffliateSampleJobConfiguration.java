@@ -6,7 +6,6 @@ import com.affliate.batch.step.processor.AffiliteItemProcess;
 import com.affliate.batch.step.tasklet.AffiliateUploadFileTasklet;
 import com.affliate.batch.type.AffiliateCompanyType;
 import com.affliate.batch.type.AffiliateSqlType;
-import com.affliate.batch.utility.AffiliateJobListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -55,7 +54,6 @@ public class AffliateSampleJobConfiguration {
     public Job affiliateBatchJob(){
         return jobBuilderFactory.get("affiliateBatchJob")
                 .incrementer(new RunIdIncrementer())
-                .listener(new AffiliateJobListener())
                 .start(makeAffiliateFileStep(null))
                 .next(uploadFileToFinalPathStep())
                 .build();
