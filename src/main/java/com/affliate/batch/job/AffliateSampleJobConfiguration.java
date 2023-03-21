@@ -13,6 +13,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
@@ -71,6 +72,7 @@ public class AffliateSampleJobConfiguration {
     }
 
     @Bean
+    @JobScope
     public Step uploadFileToFinalPathStep(){
 
         log.info(">>>>>>>>>>>>>>> Step started :::: uploadFileToFinalPathStep");
@@ -80,6 +82,7 @@ public class AffliateSampleJobConfiguration {
     }
 
     @Bean
+    @StepScope
     public JdbcPagingItemReader<AffiliateResultDto> affiliateJdbcPagingItemReader()  {
         try {
             log.info(">>>>>>>>>>>>>>> affiliateResultDtoJdbcPagingItemReader started");
@@ -107,6 +110,7 @@ public class AffliateSampleJobConfiguration {
 
     /* ItemProcessor */
     @Bean
+    @StepScope
     public ItemProcessor<AffiliateResultDto, AffiliateResultDto> affiliateProcessor(){
         return new AffiliteItemProcess();
     }
