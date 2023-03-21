@@ -13,7 +13,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
@@ -24,7 +23,6 @@ import org.springframework.batch.item.database.support.SqlPagingQueryProviderFac
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -81,12 +79,8 @@ public class AffliateSampleJobConfiguration {
                 .build();
     }
 
-
-
-    @JobScope
     @Bean
     public JdbcPagingItemReader<AffiliateResultDto> affiliateJdbcPagingItemReader()  {
-
         try {
             log.info(">>>>>>>>>>>>>>> affiliateResultDtoJdbcPagingItemReader started");
 
@@ -104,7 +98,7 @@ public class AffliateSampleJobConfiguration {
                     .build();
 
         }catch (Exception e){
-            log.info(e.getMessage());
+            log.error(e.getMessage());
         }
 
         return null;
@@ -118,8 +112,8 @@ public class AffliateSampleJobConfiguration {
     }
 
     /* ItemWriter */
-    @StepScope
-    public FlatFileItemWriter<AffiliateResultDto> fileWriter( String tempPath ) {
+    public FlatFileItemWriter<AffiliateResultDto> fileWriter(String tempPath) {
+        log.info(">>>>>>>>>>>>>>>>>> started :::: fileWriter");
         FlatFileItemWriter<AffiliateResultDto> writer = null;
 
         try {
@@ -148,12 +142,11 @@ public class AffliateSampleJobConfiguration {
 
 
         }catch (Exception e){
-            log.debug(">>>>>>>>>> fileWriter() error : " + e.getMessage());
+            log.error(">>>>>>>>>> fileWriter() error : " + e.getMessage());
         }
         return writer;
     }
 
-    @Bean
     public PagingQueryProvider createAffiliateQuery() throws Exception {
         log.info(">>>>>> createAffiliateQuery ");
 

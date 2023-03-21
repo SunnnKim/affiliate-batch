@@ -3,11 +3,13 @@ package com.affliate.batch.step.processor;
 import com.affliate.batch.model.AffiliateResultDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Optional;
 
 @Slf4j
+@Component
 public class AffiliteItemProcess implements ItemProcessor<AffiliateResultDto, AffiliateResultDto> {
 
     /* 제외카테고리 */

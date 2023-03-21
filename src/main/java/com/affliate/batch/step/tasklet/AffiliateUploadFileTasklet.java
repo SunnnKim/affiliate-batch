@@ -4,7 +4,6 @@ import com.affliate.batch.type.AffiliateCompanyType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -19,7 +18,6 @@ import java.util.Objects;
 
 @Slf4j
 @AllArgsConstructor
-@StepScope
 @Component
 public class AffiliateUploadFileTasklet implements Tasklet {
 
@@ -29,6 +27,7 @@ public class AffiliateUploadFileTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
+        log.info(">>>>>>>>>>>> tasklet start :: AffiliateUploadFileTasklet ");
 
         String tempPath = (String) stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("tempPath");
         String finalPath = (String) stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("finalPath");
