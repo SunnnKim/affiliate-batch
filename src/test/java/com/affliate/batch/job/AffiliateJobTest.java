@@ -32,7 +32,7 @@ public class AffiliateJobTest extends TestJobUtility {
     }
 
     @Test
-    public void test() throws Exception {
+    public void success_case() throws Exception {
         // given
         JobParameters jobParameters = getUniqueJobParametersBuilder()
                 .addString("affiliateName", "A_COMPANY")
