@@ -46,14 +46,13 @@ public class AffliateSampleJobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final JdbcTemplate jdbcTemplate;
-    private final AffiliateUploadFileTasklet affiliateUploadFileTasklet;
 
 
     @Bean
     public Job affiliateBatchJob(){
         return jobBuilderFactory.get("affiliateBatchJob")
                 .incrementer(new RunIdIncrementer())
-                .start(makeAffiliateFileStep(null))
+                .start(makeAffiliateFileStep())
                 .next(uploadFileToFinalPathStep())
                 .build();
     }
@@ -61,13 +60,13 @@ public class AffliateSampleJobConfiguration {
 
     @Bean
     @JobScope
-    public Step makeAffiliateFileStep( @Value("#{jobParameters[tempPath]}") String tempPath ){
+    public Step makeAffiliateFileStep( ){
         log.info(">>>>>>>>>>>>>>> Step started :::: makeAffiliateFileStep ");
         return stepBuilderFactory.get("makeAffiliateFileStep")
                 .<AffiliateResultDto, AffiliateResultDto> chunk(100)
                 .reader(affiliateJdbcPagingItemReader())
                 .processor(affiliateProcessor())
-                .writer(fileWriter(tempPath))
+                .writer(fileWriter(null))
                 .build();
     }
 
@@ -77,7 +76,7 @@ public class AffliateSampleJobConfiguration {
 
         log.info(">>>>>>>>>>>>>>> Step started :::: uploadFileToFinalPathStep");
         return stepBuilderFactory.get("uploadFileToFinalPathStep")
-                .tasklet(affiliateUploadFileTasklet)
+                .tasklet(new AffiliateUploadFileTasklet())
                 .build();
     }
 
@@ -116,12 +115,14 @@ public class AffliateSampleJobConfiguration {
     }
 
     /* ItemWriter */
-    public FlatFileItemWriter<AffiliateResultDto> fileWriter(String tempPath) {
+    @Bean
+    @StepScope
+    public FlatFileItemWriter<AffiliateResultDto> fileWriter( @Value("#{jobParameters[tempPath]}") String tempPath ) {
         log.info(">>>>>>>>>>>>>>>>>> started :::: fileWriter");
         FlatFileItemWriter<AffiliateResultDto> writer = null;
 
         try {
-            //lineAggregator
+            //lineAggregator : 개체를 나타내는 문자열을 만드는 데 사용되는 인터페이스
             DelimitedLineAggregator<AffiliateResultDto> lineAggreator = new DelimitedLineAggregator<>();
             lineAggreator.setDelimiter(",");
             lineAggreator.setFieldExtractor(affiliateResultDto -> new Object[]{
@@ -137,11 +138,11 @@ public class AffliateSampleJobConfiguration {
                     .lineAggregator(lineAggreator)
                     .resource(new FileSystemResource(AffiliateCompanyType.A_COMPANY.getTemporaryFilePath(tempPath)))
                     .encoding("UTF-8")
-                    .headerCallback(writer1 -> writer1.write("주문번호,고객번호,제휴사코드,제휴고객번호,상품카테고리코드" ))
-                    .footerCallback(writer1 -> writer1.write("----------------------\n" ))
+                    .headerCallback(writer1 -> writer1.write("주문번호,고객번호,제휴사코드,제휴고객번호,상품카테고리코드" )) // header설정
+                    .footerCallback(writer1 -> writer1.write("----------------------\n" )) // footer 설정
                     .build();
 
-            writer.setAppendAllowed(false);
+            writer.setAppendAllowed(false); // 이미 존재하는 경우 대상 파일을 추가해야 함을 나타내는 플래그
             writer.afterPropertiesSet();
 
 
@@ -151,6 +152,7 @@ public class AffliateSampleJobConfiguration {
         return writer;
     }
 
+    @Bean
     public PagingQueryProvider createAffiliateQuery() throws Exception {
         log.info(">>>>>> createAffiliateQuery ");
 
@@ -160,11 +162,7 @@ public class AffliateSampleJobConfiguration {
         queryProvider.setSelectClause(affiliateSql.getSelectClause());
         queryProvider.setFromClause(affiliateSql.getFromClause());
         queryProvider.setWhereClause(affiliateSql.getWhereClause());
-
-        Map<String, Order> sortKey = new HashMap<>();
-        sortKey.put("ORD_NO", Order.ASCENDING);
-
-        queryProvider.setSortKeys(sortKey);
+        queryProvider.setSortKeys(Map.of("ORD_NO", Order.ASCENDING));
 
         return queryProvider.getObject();
 

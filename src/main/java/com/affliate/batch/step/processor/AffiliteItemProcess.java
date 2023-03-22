@@ -21,7 +21,7 @@ public class AffiliteItemProcess implements ItemProcessor<AffiliateResultDto, Af
     };
 
     @Override
-    public AffiliateResultDto process(AffiliateResultDto result) throws Exception {
+    public AffiliateResultDto process(AffiliateResultDto result) {
         log.info(">>>>>>>>>>>> affiliateProcessor");
         // 제외조건 처리
         Optional.of(result).ifPresent( data -> {
