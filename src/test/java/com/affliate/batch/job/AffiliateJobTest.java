@@ -4,7 +4,6 @@ import com.affliate.batch.config.BatchTestConfig;
 import com.affliate.batch.step.processor.AffiliteItemProcess;
 import com.affliate.batch.step.tasklet.AffiliateUploadFileTasklet;
 import com.affliate.batch.untility.TestJobUtility;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBatchTest
 @SpringBootTest(classes = {
-        AffliateSampleJobConfiguration.class,
+        ACompanyAffiliateJobConfig.class,
         BatchTestConfig.class,
         AffiliateUploadFileTasklet.class,
         AffiliteItemProcess.class})

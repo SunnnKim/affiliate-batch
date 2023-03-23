@@ -41,7 +41,7 @@ import java.util.Objects;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class AffliateSampleJobConfiguration {
+public class ACompanyAffiliateJobConfig {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
