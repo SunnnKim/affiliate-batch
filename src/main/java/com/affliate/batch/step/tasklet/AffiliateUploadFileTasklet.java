@@ -29,9 +29,9 @@ public class AffiliateUploadFileTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) throws Exception {
         log.info(">>>>>>>>>>>> tasklet start :: AffiliateUploadFileTasklet ");
 
-        String tempPath = (String) stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("tempPath");
-        String finalPath = (String) stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("finalPath");
-        String affiliateName = (String) stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("affiliateName");
+        String tempPath = stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("tempPath");
+        String finalPath = stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("finalPath");
+        String affiliateName = stepContribution.getStepExecution().getJobExecution().getJobParameters().getString("affiliateName");
 
         String tempFilePath = Objects.requireNonNull(AffiliateCompanyType.findTypeByAffiliateName(affiliateName)).getTemporaryFilePath(tempPath);
         String finalFilePath = Objects.requireNonNull(AffiliateCompanyType.findTypeByAffiliateName(affiliateName)).getFullFilePathWithDate(finalPath);

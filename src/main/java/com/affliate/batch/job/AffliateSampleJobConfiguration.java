@@ -60,7 +60,7 @@ public class AffliateSampleJobConfiguration {
 
     @Bean
     @JobScope
-    public Step makeAffiliateFileStep( ){
+    public Step makeAffiliateFileStep() {
         log.info(">>>>>>>>>>>>>>> Step started :::: makeAffiliateFileStep ");
         return stepBuilderFactory.get("makeAffiliateFileStep")
                 .<AffiliateResultDto, AffiliateResultDto> chunk(100)
