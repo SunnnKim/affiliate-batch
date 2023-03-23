@@ -44,8 +44,8 @@ public class AffiliateJobTest extends TestJobUtility {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
 
         // then
-        assert(jobExecution.getStatus()).equals(BatchStatus.COMPLETED);
-        assert(jobExecution.getExitStatus()).equals(ExitStatus.COMPLETED);
+        assert(BatchStatus.COMPLETED.equals(jobExecution.getStatus()));
+        assert(ExitStatus.COMPLETED.equals(jobExecution.getExitStatus()));
 
     }
 
